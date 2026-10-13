@@ -8,8 +8,10 @@ from modeling import train
 st.set_page_config(page_title="Starbucks EDA & Predictor", page_icon="☕", layout="wide")
 st.title("☕ Starbucks EDA & Drink Category Predictor")
 st.caption("Educational analysis of your dataset. Not an official Starbucks application.")
-uploaded = st.sidebar.file_uploader("Upload starbucks.csv", type=["csv"])
 local = Path(__file__).parent / "data" / "starbucks.csv"
+uploaded = None
+if not local.exists():
+    uploaded = st.sidebar.file_uploader("Upload starbucks.csv", type=["csv"])
 if uploaded is None and not local.exists():
     st.info("Upload your original Starbucks menu CSV to explore it and train the decision tree.")
     st.stop()
@@ -20,7 +22,7 @@ except Exception as exc:
     st.error(f"Cannot read CSV: {exc}")
     st.stop()
 
-eda, prediction, performance = st.tabs(["Explore data", "Predict category", "Model results"])
+prediction, eda, performance = st.tabs(["Predict category", "Explore data", "Model results"])
 with eda:
     a, b, c = st.columns(3)
     a.metric("Rows", len(df))
@@ -86,3 +88,4 @@ with performance:
                   filled=True, rounded=True, fontsize=7, ax=ax)
         st.pyplot(fig)
         plt.close(fig)
+
